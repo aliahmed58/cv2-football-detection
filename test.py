@@ -1,11 +1,11 @@
 import cv2
 from pipeline import Pipeline
 
-frame = cv2.imread('./res/fifa_test.png')
+frame = cv2.imread('./res/test_4.jpg')
 
 pip = Pipeline()
 
-output = pip._filter_field(frame)
+output = pip.halfway_lines(frame)
 
 imS = cv2.resize(output, (960, 540))      
 
