@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 from math import *
+from utils import *
 
 def angle_trunc(a):
     while a < 0.0:
@@ -14,7 +15,7 @@ def getAngleBetweenPoints(x_orig, y_orig, x_landmark, y_landmark):
     return degrees(angle_trunc(atan2(deltaY, deltaX)))
 
 # read the original image
-original_image = cv2.imread('./res/test_4.jpg')
+original_image = cv2.imread('./res/fifa_test.png')
 
 # convert image to hsv from BGR (default)
 hsv_image = cv2.cvtColor(original_image, cv2.COLOR_BGR2HSV)
@@ -33,16 +34,17 @@ green_only_image = cv2.bitwise_and(original_image, original_image, mask = green_
 edges = cv2.Canny(green_only_image, 100, 300)
 lines = cv2.HoughLinesP(edges,3,np.pi/180,100,minLineLength=100,maxLineGap=10)
 
-verticals = []
 
+verticals = []
 
 for line in lines:
     x1,y1,x2,y2 = line[0]
     # angle = getAngleBetweenPoints(x1, y1, x2, y2)
-    angle = getAngleBetweenPoints(x2, y2, x1, y1)
+    test = is_vertical(x1, y1, x2, y2)
     
-    if angle < 160:
-        print(f'{x1}, {y1} | {x2}, {y2} - Angle: {angle}')
+    if test:
+        print(type(line[0]))
+        print(f'{x1}, {y1} | {x2}, {y2} - Angle: ')
         verticals.append(line[0])
         cv2.line(green_only_image,(x1,y1),(x2,y2),(0,255,255),3)
 
