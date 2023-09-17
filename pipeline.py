@@ -93,7 +93,7 @@ class Pipeline():
 
         return vertical_lines
     
-    def halfway_lines(self, frame: np.ndarray) -> np.ndarray:
+    def _get_halfway_line(self, frame: np.ndarray) -> np.ndarray:
         
         # get image height (frame)
         height, _ = frame.shape[:2]
@@ -107,21 +107,20 @@ class Pipeline():
         # get vertical lines from all the lines
         vertical_lines: np.ndarray = self._detect_filter_halfway_line(all_lines)
         
-        # TODO: get the best possible vertical line and extend it over the same slope on both sides.
+        # TODO: get the best possible vertical line that is over halfway to extend it instead of line[0]
+        # extend the line and draw it on frame
+        halfway_line = utils.extend_line(vertical_lines[0], height)
         
-        # for line in vertical_lines:
-        #     x1, y1, x2, y2 = line
-        #     print(line)
-        #     slope = abs((y2 - y1) / (x2 - x1))
-        #     print(slope)
-        #     cv2.line(green_only_frame, (x1, y1), (x2, y2), (0, 255, 255), 3)
+        return halfway_line
+    
+    def draw_halfway_line(self, frame: np.ndarray, line: np.ndarray) -> np.ndarray:
+       
+        x0, y0, x3, y3 = line 
         
-        # # draw the line on frame and extend it
-        # x1, y1, x2, y2 = vertical_lines[0]
-        # print(x1, y1, x2, y2)
-        # cv2.line(green_only_frame, (x1, y1), (x2, y2), (0, 255, 255), 3)
-        # center = (int((x1 + x2) / 2), int((y1 + y2) / 2))
-        # cv2.circle(green_only_frame, (center), 4, (255, 0, 0), 4)
+        cv2.line(frame, (x0, y0), (x3, y3), (0, 255, 255), 3)
         
-        return green_only_frame
+        center = (int((x0 + x3) / 2), int((y0 + y3) / 2))
+        cv2.circle(frame, (center), 4, (255, 0, 0), 10)
+
+        return frame
         
